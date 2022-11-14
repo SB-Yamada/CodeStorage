@@ -214,6 +214,17 @@ namespace Network
         public static long Clamp(long value, int bit) => Math.Max(MinValue(bit), Math.Min(MaxValue(bit), value));
         #endregion
     }
+    public static class BitPackingJoyStick
+    {
+        public static short JoyStickPackingToShort(this Vector2 axis)
+            => (short)((ushort)((axis.x + 1f) * 127f) << 8 | (ushort)((axis.y + 1f) * 127f));
+        public static Vector2 ExpandToJoyStick(this short value)
+        {
+            var axis = new Vector2((byte)(value >> 8) - 127f, (byte)(value & 0x00FF) - 127f) * 0.00787401574f;
+            if (axis.sqrMagnitude > 1f) axis.Normalize();
+            return axis;
+        }
+    }
     public static class BitPackingAngle
     {
         const float Unit = 0.01f;
