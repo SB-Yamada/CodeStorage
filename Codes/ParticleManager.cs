@@ -96,21 +96,22 @@ namespace Yamara
             foreach (var key in Instance._particles.Select(d => d.Key).ToArray()) ForceRemove(key);
         }
 
-        public static ParticleSystem Play(AssetReferenceT<GameObject> particleRef, Vector3 position, Quaternion? quaternion = null, bool play = true)
+        public static ParticleSystem Get(AssetReferenceT<GameObject> particleRef)
+        {
+            if (Instance._particles.TryGetValue(particleRef.AssetGUID, out var particle)) return particle.Instance;
+            Debug.LogError("Not added to ParticleManager : " + particleRef);
+            return null;
+        }
+        public static ParticleSystem Get(AssetReferenceT<GameObject> particleRef, Vector3 position, Quaternion? quaternion = null)
         {
             if (Instance._particles.TryGetValue(particleRef.AssetGUID, out var particle))
             {
-                Instance.PlayParticle(particle.Instance, position, quaternion, play);
+                quaternion ??= Quaternion.identity;
+                particle.transform.SetPositionAndRotation(position, quaternion.Value);
                 return particle.Instance;
             }
             Debug.LogError("Not added to ParticleManager : " + particleRef);
             return null;
-        }
-        private void PlayParticle(ParticleSystem particle, Vector3 position, Quaternion? quaternion = null, bool play = true)
-        {
-            quaternion ??= Quaternion.identity;
-            particle.transform.SetPositionAndRotation(position, quaternion.Value);
-            if (play) particle.Play();
         }
     }
 }
