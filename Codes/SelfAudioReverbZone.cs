@@ -115,12 +115,12 @@ namespace Yamara.Audio
             Reverb.maxDistance = distance;
             MaxSqrDistance = distance * distance;
         }
-        public void SetMinSqrDistance(float sqrDistance)
+        public void UpdateMinSqrDistance(float sqrDistance)
         {
             Reverb.minDistance = Mathf.Sqrt(sqrDistance);
             MinSqrDistance = sqrDistance;
         }
-        public void SetMaxSqrDistance(float sqrDistance)
+        public void UpdateMaxSqrDistance(float sqrDistance)
         {
             Reverb.maxDistance = Mathf.Sqrt(sqrDistance);
             MaxSqrDistance = sqrDistance;
