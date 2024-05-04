@@ -319,7 +319,16 @@ namespace Generic
         #endregion
 
         #region Other
+        public static bool IsAtSnapShot(this NetworkBehaviour nb) => IsAtSnapShot(nb.Object);
+        public static bool IsAtSnapShot(this NetworkObject no) => no.HasStateAuthority || (no.Runner.IsResimulation && no.Runner.IsFirstTick);
 
+        public static bool IsInputTiming(this NetworkBehaviour nb) => IsInputTiming(nb.Object);
+        public static bool IsInputTiming(this NetworkObject no) => no.Runner || no.HasInputAuthority && no.Runner.IsForward || (no.Runner.IsResimulation && no.Runner.IsFirstTick);
+#if FUSION2
+        public static float TimeScale(this NetworkRunner runner) => runner.TryGetPhysicsInfo(out var info) ? info.TimeScale : 0f;
+        public static float PhysicalDeltaTime(this NetworkRunner runner) => runner.TryGetPhysicsInfo(out var info) && info.TimeScale > 0f ? runner.DeltaTime / info.TimeScale : 0f;
+#endif
+        
         public static void Disconnects(this NetworkRunner runner, IEnumerable<PlayerRef> targetPlayers)
         {
             foreach (var p in targetPlayers) if (runner.ActivePlayers.Contains(p)) runner.Disconnect(p);
@@ -335,8 +344,7 @@ namespace Generic
             }
             if (noAssignment) no.AssignInputAuthority(PlayerRef.None);
             return false;
-        }
-
+        }        
         #endregion
     }
 
